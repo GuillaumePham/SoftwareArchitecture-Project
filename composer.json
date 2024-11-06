@@ -1,0 +1,15 @@
+{
+    "name": "root/html",
+    "autoload": {
+        "psr-4": {
+            "Root\\Html\\": "src/"
+        }
+    },
+    "config": {
+        "bin-compat": "full"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*",
+        "phpstan/phpstan": "^1.12"
+    }
+}
