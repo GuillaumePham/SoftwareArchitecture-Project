@@ -1,11 +1,23 @@
 version: '3.8'
 
 services:
-  php-container:
-    container_name: php-container
+
+  php-composer:
+    container_name: php-composer
+    image: composer:latest
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: composer install
+    restart: "no"
+
+  php-webserver:
+    container_name: php-webserver
+    depends_on:
+      - php-composer
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: webserver-Dockerfile
     ports:
       - "80:80"
     volumes:
