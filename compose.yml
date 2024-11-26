@@ -17,7 +17,7 @@ services:
       - php-composer
     build:
       context: .
-      dockerfile: webserver-Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
