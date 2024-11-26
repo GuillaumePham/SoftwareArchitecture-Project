@@ -30,17 +30,17 @@ class MySqlDbAdapter implements IDbAdapter {
 	public function query(string $sql, array $params = []): array|false {
 		$statement = $this->pdo->prepare($sql);
 		$operation = $statement->execute($params);
-		var_dump($operation);
+		if (!$operation) {
+			return false;
+		}
 
-		// return the result
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-		var_dump($result);
 		return $result;
 	}
 
-	public function execute(string $sql, array $params = []): void {
+	public function execute(string $sql, array $params = []): bool {
 		$statement = $this->pdo->prepare($sql);
-		$statement->execute($params);
+		return $statement->execute($params);
 	}
 
 }

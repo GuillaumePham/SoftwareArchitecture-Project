@@ -20,12 +20,13 @@ class MockDbAdapter implements IDbAdapter {
 		return $this->data[$table] ?? [];
 	}
 
-	public function execute(string $sql, array $params = []): void {
+	public function execute(string $sql, array $params = []): bool {
 		$table = $this->getTableNameFromQuery($sql);
 		if (!isset($this->data[$table])) {
 			$this->data[$table] = [];
 		}
 		$this->data[$table][] = $params;
+		return true;
 	}
 
 	private function getTableNameFromQuery(string $sql): string {

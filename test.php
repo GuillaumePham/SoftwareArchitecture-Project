@@ -9,28 +9,30 @@ use App\NewsEntityManager;
 
 $manager = new NewsEntityManager();
 
+// clear for testing
 $manager->clear();
 
-$firstNews = $manager->getById(new Uid("1"));
-var_dump($firstNews);
 
 $createdNews = $manager->create(
 	new News(
-		new Uid("sex"),
-		"uWU" ,
+		new Uid("1"),
+		"First news" ,
 		new DateTimeImmutable("2021-10-10 10:10:10")
 	)
 );
-var_dump($createdNews);
+echo $createdNews . PHP_EOL;
+
+$firstNews = $manager->getById(new Uid("1"));
+echo $firstNews . PHP_EOL;
 
 $updateNews = $manager->update(
 	new News(
 		new Uid("1"),
-		" HAHA Modified" ,
-		new DateTimeImmutable("2021-10-10 10:10:10")
+		"Edited" ,
+		new DateTimeImmutable("1969-12-31 23:59:59")
 	)
 );
-var_dump($updateNews);
+echo $updateNews . PHP_EOL;
 
 $manager->delete(new Uid("1"));
 

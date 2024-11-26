@@ -63,60 +63,56 @@ class NewsRepository extends Repository {
 
 
 	public function findById(Uid $id): ?News {
-		$result = $this->dbAdapter->query('SELECT * FROM news WHERE id = :id', ['id' => $id]);
-		if (!$result) return null;
+		$sql = 'SELECT * FROM news
+				WHERE id = :id';
+		$result = $this->dbAdapter->query($sql, ['id' => $id]);
+		if (!$result) {
+			return null;
+		}
 
 		$row = $result[0];
 		return $this->tryHydrateNews($row);
 	}
 
 	public function findAll(): ?array {
-		$results = $this->dbAdapter->query('SELECT * FROM news');
-
-		if (!$results) return null;
+		$sql = 'SELECT * FROM news';
+		$results = $this->dbAdapter->query($sql);
+		if (!$results) {
+			return null;
+		}
 
 		return $this->tryHydrateNewsList($results);
 	}
 
-	public function createNews(News $news): ?News {
-		$sql = 'INSERT INTO news (id, content, created_at) VALUES (:id, :content, :created_at)';
-		$result = $this->dbAdapter->query($sql, [
+	public function createNews(News $news): bool {
+		$sql = 'INSERT INTO news (id, content, created_at)
+				VALUES (:id, :content, :created_at)';
+		return $this->dbAdapter->execute($sql, [
 			'id' => $news->getId(),
 			'content' => $news->getContent(),
 			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
 		]);
-
-		if (!$result) return null;
-
-		$row = $result[0];
-		return $this->tryHydrateNews($row);
 	}
 
-	public function updateNews(News $news): ?News {
-		$sql = 'UPDATE news SET content = :content, created_at = :created_at WHERE id = :id';
-		$result = $this->dbAdapter->query($sql, [
+	public function updateNews(News $news): bool {
+		$sql = 'UPDATE news
+				SET content = :content, created_at = :created_at
+				WHERE id = :id';
+		return $this->dbAdapter->execute($sql, [
 			'id' => $news->getId(),
 			'content' => $news->getContent(),
 			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
 		]);
-
-		if (!$result) return null;
-
-		$row = $result[0];
-		return $this->tryHydrateNews($row);
 	}
 
-	public function deleteNews(Uid $id): ?News {
-		$sql = 'DELETE FROM news WHERE id = :id';
-		$result = $this->dbAdapter->query($sql, ['id' => $id]);
-
-		if (!$result) return null;
-
-		$row = $result[0];
-		return $this->tryHydrateNews($row);
+	public function deleteNews(Uid $id): bool {
+		$sql = 'DELETE FROM news
+				WHERE id = :id';
+		return $this->dbAdapter->execute($sql, ['id' => $id]);
 	}
 
 	public function clear(): void {
-		$this->dbAdapter->execute('DELETE FROM news');
+		$sql = 'DELETE FROM news';
+		$this->dbAdapter->execute($sql);
 	}
 }

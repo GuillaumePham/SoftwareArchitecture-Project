@@ -6,5 +6,5 @@ namespace App\Adapter;
 
 interface IDbAdapter {
 	public function query(string $sql, array $params = []): array|bool;
-	public function execute(string $sql, array $params = []): void;
+	public function execute(string $sql, array $params = []): bool;
 }

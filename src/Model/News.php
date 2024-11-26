@@ -7,7 +7,6 @@ namespace App\Model;
 use App\VO\Uid;
 
 use DateTimeInterface;
-use DateTimeImmutable;
 
 class News implements Model {
 	private Uid $id;
@@ -43,5 +42,13 @@ class News implements Model {
 	}
 	public function setCreatedAt(DateTimeInterface $date): void {
 		$this->created_at = $date;
+	}
+
+	public function __tostring(): string {
+		return sprintf(
+			'[%s] %s',
+			$this->created_at->format('Y-m-d H:i:s'),
+			$this->content
+		);
 	}
 }
