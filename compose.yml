@@ -14,6 +14,8 @@ services:
       - "3306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
+    networks:
+      - orm-network
     restart: always
 
   php-composer:
@@ -39,3 +41,7 @@ services:
       - .:/var/www/html
       - ./apache/000-apache.conf:/etc/apache2/sites-available/000-default.conf
     restart: always
+
+networks:
+  orm-network:
+    driver: bridge
