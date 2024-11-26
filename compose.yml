@@ -2,6 +2,20 @@ version: '3.8'
 
 services:
 
+  mysql-database:
+    container_name: mysql-database
+    image: mysql:9.1
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: orm
+      MYSQL_USER: orm
+      MYSQL_PASSWORD: orm
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: always
+
   php-composer:
     container_name: php-composer
     image: composer:latest
@@ -15,6 +29,7 @@ services:
     container_name: php-webserver
     depends_on:
       - php-composer
+      - mysql-database
     build:
       context: .
       dockerfile: Dockerfile
