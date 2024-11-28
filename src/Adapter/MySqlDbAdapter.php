@@ -7,14 +7,14 @@ namespace App\Adapter;
 use PDO;
 use App\VO\Uid;
 
-class MySqlDbAdapter implements DbAdapter {
+class MySqlDbAdapter implements IDbAdapter {
 	private $pdo;
 
 	public function __construct(
-		string $host,
-		string $db,
-		string $user,
-		string $password
+		private string $host,
+		private string $db,
+		private string $user,
+		private string $password
 	) {
 		$dsn = "mysql:host=$host;dbname=$db";
 		$this->pdo = new PDO($dsn, $user, $password);
@@ -92,13 +92,6 @@ class MySqlDbAdapter implements DbAdapter {
 	public function clearTable(string $tableName): void {
 		$sql = "DELETE FROM $tableName";
 		$this->execute($sql);
-	}
-	public function clearAll(): void {
-		$tables = $this->query("SHOW TABLES");
-		foreach ($tables as $table) {
-			$table = array_values($table)[0];
-			$this->clearTable($table);
-		}
 	}
 
 }

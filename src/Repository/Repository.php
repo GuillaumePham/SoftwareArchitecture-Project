@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Adapter\DbAdapter;
+use App\Adapter\IDbAdapter;
 
 abstract class Repository {
-	protected DbAdapter $dbAdapter;
+	protected IDbAdapter $dbAdapter;
 
-	public function __construct(DbAdapter $dbAdapter) {
+	public function __construct(IDbAdapter $dbAdapter) {
 		$this->dbAdapter = $dbAdapter;
 	}
 
-	abstract protected function getTableName(): string;
+	public abstract function getTableName(): string;
 }

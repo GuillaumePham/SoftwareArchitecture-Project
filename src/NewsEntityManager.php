@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Adapter\DbAdapter;
+use App\Adapter\IDbAdapter;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
@@ -15,7 +15,7 @@ use App\Model\News;
 use App\VO\Uid;
 
 class NewsEntityManager {
-	private DbAdapter $dbAdapter;
+	private IDbAdapter $dbAdapter;
 	private NewsRepository $newsRepository;
 
 	public function __construct() {
@@ -29,16 +29,17 @@ class NewsEntityManager {
 		);
 		// $this->dbAdapter = new MockDbAdapter();
 
-		$this->dbAdapter->addTable("news", [
+		$this->newsRepository = new NewsRepository($this->dbAdapter);
+
+
+		$this->dbAdapter->addTable($this->newsRepository->getTableName(), [
 			'id' => 'varchar(36) primary key',
 			'content' => 'varchar(256) not null',
 			'created_at' => 'datetime not null'
 		]);
-
-		$this->newsRepository = new NewsRepository($this->dbAdapter);
 	}
 
-	public function getDbAdapter(): DbAdapter {
+	public function getDbAdapter(): IDbAdapter {
 		return $this->dbAdapter;
 	}
 
@@ -52,7 +53,11 @@ class NewsEntityManager {
 			'content' => $news->getContent(),
 			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
 		];
-		if ($this->dbAdapter->createEntity($news->getId(), "news", $data)) {
+		if ($this->dbAdapter->createEntity(
+			$news->getId(),
+			$this->newsRepository->getTableName(),
+			$data
+		)) {
 			return $this->newsRepository->findById($news->getId());
 		}
 	}
@@ -62,12 +67,16 @@ class NewsEntityManager {
 			'content' => $news->getContent(),
 			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
 		];
-		if ($this->dbAdapter->updateEntity($news->getId(), "news", $data)) {
+		if ($this->dbAdapter->updateEntity(
+			$news->getId(),
+			$this->newsRepository->getTableName(),
+			$data
+		)) {
 			return $this->newsRepository->findById($news->getId());
 		}
 	}
 
 	public function delete(Uid $id): void {
-		$this->dbAdapter->deleteEntity($id, "news");
+		$this->dbAdapter->deleteEntity($id, $this->newsRepository->getTableName());
 	}
 }

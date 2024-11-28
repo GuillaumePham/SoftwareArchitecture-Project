@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\News;
-use App\Adapter\DbAdapter;
+use App\Adapter\IDbAdapter;
 use App\VO\Uid;
-use DateTimeImmutable;
 
 class NewsRepository extends Repository {
+	private static string $tableName = 'news';
+
 	public function __construct(
-		protected DbAdapter $dbAdapter
+		protected IDbAdapter $dbAdapter
 	) { }
 
-	protected function getTableName(): string {
-		return 'news';
+	public function getTableName(): string {
+		return self::$tableName;
 	}
 
 	public function findById(Uid $id): ?News {
-		$result = $this->dbAdapter->query("news", ['id' => $id]);
+		$result = $this->dbAdapter->query($this->getTableName(), ['id' => $id]);
 		if (!$result) {
 			return null;
 		}
@@ -29,7 +30,7 @@ class NewsRepository extends Repository {
 	}
 
 	public function findAll(): ?array {
-		$results = $this->dbAdapter->query("news");
+		$results = $this->dbAdapter->query($this->getTableName());
 		if (!$results) {
 			return null;
 		}

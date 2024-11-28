@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Adapter;
 use App\VO\Uid;
 
-interface DbAdapter {
+interface IDbAdapter {
 	public function query(string $tableName, array $where = []): array|bool;
 
 
@@ -15,5 +15,4 @@ interface DbAdapter {
 
 	public function addTable(string $tableName, array $schema): void;
 	public function clearTable(string $tableName): void;
-	public function clearAll(): void;
 }
