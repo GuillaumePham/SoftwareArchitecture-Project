@@ -94,7 +94,11 @@ class MySqlDbAdapter implements IDbAdapter {
 		$this->execute($sql);
 	}
 	public function clearAll(): void {
-		$sql = "DELETE ";
+		$tables = $this->query("SHOW TABLES");
+		foreach ($tables as $table) {
+			$table = array_values($table)[0];
+			$this->clearTable($table);
+		}
 	}
 
 }
