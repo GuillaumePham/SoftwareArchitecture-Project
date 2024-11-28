@@ -12,24 +12,24 @@ class MockDbAdapter implements IDbAdapter {
 	public function __construct() {}
 
 	public function query(string $tableName, array $where = []): array|bool {
+		if (!isset($this->data[$tableName])) {
+			return false;
+		}
+
 		if (empty($where)) {
 			return $this->data[$tableName];
 		}
 
-		$result = [];
-		foreach ($this->data[$tableName] as $row) {
-			$match = true;
-			foreach ($where as $field => $value) {
-				if (!isset($row[$field]) || $row[$field] !== $value) {
-					$match = false;
-					break;
-				}
-			}
-			if ($match) {
-				$result[] = $row;
+		$results = [];
+		foreach (array_keys($this->data[$tableName]) as $id) {
+			$rowData = $this->data[$tableName][$id];
+			$row = ['id' => (string)$id] + $rowData;
+
+			if (array_intersect_assoc($where, $row) === $where) {
+				$results[] = $row;
 			}
 		}
-		return $result;
+		return $results;
 	}
 
 	public function addTable(string $tableName, array $schema): void {

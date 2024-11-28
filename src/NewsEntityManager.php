@@ -8,6 +8,7 @@ use App\Adapter\IDbAdapter;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
+use App\Adapter\MockDbAdapter;
 use App\Adapter\MySqlDbAdapter;
 use App\Repository\NewsRepository;
 use App\Model\News;
@@ -26,6 +27,8 @@ class NewsEntityManager {
 			user: $config['user'],
 			password: $config['password']
 		);
+		// $this->dbAdapter = new MockDbAdapter();
+
 		$this->dbAdapter->addTable("news", [
 			'id' => 'varchar(36) primary key',
 			'content' => 'varchar(256) not null',
