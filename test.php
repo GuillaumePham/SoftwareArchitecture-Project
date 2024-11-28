@@ -13,6 +13,9 @@ $manager = new NewsEntityManager();
 $manager->clear();
 
 
+$firstNews = $manager->getById(new Uid("1"));
+echo $firstNews . PHP_EOL;
+
 $createdNews = $manager->create(
 	new News(
 		new Uid("1"),
@@ -35,6 +38,9 @@ $updateNews = $manager->update(
 echo $updateNews . PHP_EOL;
 
 $manager->delete(new Uid("1"));
+
+$firstNews = $manager->getById(new Uid("1"));
+echo $firstNews . PHP_EOL;
 
 
 

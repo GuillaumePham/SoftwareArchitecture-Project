@@ -83,36 +83,4 @@ class NewsRepository extends Repository {
 
 		return $this->tryHydrateNewsList($results);
 	}
-
-	public function createNews(News $news): bool {
-		$sql = 'INSERT INTO news (id, content, created_at)
-				VALUES (:id, :content, :created_at)';
-		return $this->dbAdapter->execute($sql, [
-			'id' => $news->getId(),
-			'content' => $news->getContent(),
-			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
-		]);
-	}
-
-	public function updateNews(News $news): bool {
-		$sql = 'UPDATE news
-				SET content = :content, created_at = :created_at
-				WHERE id = :id';
-		return $this->dbAdapter->execute($sql, [
-			'id' => $news->getId(),
-			'content' => $news->getContent(),
-			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
-		]);
-	}
-
-	public function deleteNews(Uid $id): bool {
-		$sql = 'DELETE FROM news
-				WHERE id = :id';
-		return $this->dbAdapter->execute($sql, ['id' => $id]);
-	}
-
-	public function clear(): void {
-		$sql = 'DELETE FROM news';
-		$this->dbAdapter->execute($sql);
-	}
 }
