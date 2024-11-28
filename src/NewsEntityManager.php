@@ -70,5 +70,4 @@ class NewsEntityManager {
 	public function delete(Uid $id): void {
 		$this->dbAdapter->deleteEntity($id, "news");
 	}
-
 }

@@ -7,6 +7,7 @@ namespace App\Model;
 use App\VO\Uid;
 
 use DateTimeInterface;
+use DateTimeImmutable;
 
 class News implements Model {
 	private Uid $id;
@@ -22,6 +23,50 @@ class News implements Model {
 		$this->content = $content;
 		$this->created_at = $created_at;
 	}
+
+	public static function hydrateNews(array $row): News {
+		if (!isset($row['id'])) {
+			throw new \InvalidArgumentException('Missing id in row');
+		}
+		if (!isset($row['content'])) {
+			throw new \InvalidArgumentException('Missing content in row');
+		}
+		if (!isset($row['created_at'])) {
+			throw new \InvalidArgumentException('Missing created_at in row');
+		}
+
+		return new News(
+			new Uid($row['id']),
+			$row['content'],
+			new DateTimeImmutable($row['created_at'])
+		);
+	}
+	public static function tryHydrateNews(array $row): ?News {
+		try {
+			return News::hydrateNews($row);
+		} catch (\InvalidArgumentException $e) {
+			return null;
+		}
+	}
+
+	public static function hydrateNewsList(array $rows): array {
+		$news = [];
+		foreach ($rows as $row) {
+			$news[] = News::hydrateNews($row);
+		}
+		return $news;
+	}
+	public static function tryHydrateNewsList(array $rows): array {
+		$news = [];
+		foreach ($rows as $row) {
+			$row = News::tryHydrateNews($row);
+			if ($row !== null) {
+				$news[] = $row;
+			}
+		}
+		return $news;
+	}
+
 
 	public function getId(): Uid {
 		return $this->id;

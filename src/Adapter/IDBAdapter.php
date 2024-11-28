@@ -10,9 +10,7 @@ interface IDbAdapter {
 
 
 	public function createEntity(Uid $id, string $tableName, array $data): bool;
-
 	public function updateEntity(Uid $id, string $tableName, array $data): bool;
-
 	public function deleteEntity(Uid $id, string $tableName): bool;
 
 	public function addTable(string $tableName, array $schema): void;
