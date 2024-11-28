@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Adapter;
 
 use PDO;
+use App\VO\Uid;
 
 class MySqlDbAdapter implements IDbAdapter {
 	private $pdo;
@@ -17,30 +18,83 @@ class MySqlDbAdapter implements IDbAdapter {
 	) {
 		$dsn = "mysql:host=$host;dbname=$db";
 		$this->pdo = new PDO($dsn, $user, $password);
-
-		$this->pdo->exec("
-			create table if not exists news (
-				id varchar(36) primary key,
-				content varchar(256) not null,
-				created_at datetime not null
-			)
-		");
 	}
 
-	public function query(string $sql, array $params = []): array|false {
-		$statement = $this->pdo->prepare($sql);
-		$operation = $statement->execute($params);
-		if (!$operation) {
-			return false;
-		}
-
-		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-		return $result;
-	}
-
-	public function execute(string $sql, array $params = []): bool {
+	private function execute(string $sql, array $params = []): bool {
 		$statement = $this->pdo->prepare($sql);
 		return $statement->execute($params);
+	}
+
+	public function query(string $tableName, array $where = []): array|false {
+		$sql = "SELECT * FROM $tableName";
+		if (!empty($where)) {
+			$conditions = [];
+			foreach ($where as $field => $value) {
+				$conditions[] = "$field = :$field";
+			}
+			$conditions = implode(' AND ', $conditions);
+			$sql .= " WHERE $conditions";
+		}
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute($where);
+		return $statement->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+
+	public function createEntity(Uid $id, string $tableName, array $data): bool {
+		$data['id'] = $id;
+
+		$fields = array_keys($data);
+		$formattedFieldDefs = implode(', ', $fields);
+		$formattedFieldValues = implode(
+			', ',
+			array_map(fn($field) => ":$field", $fields)
+		);
+
+		$sql = "INSERT INTO $tableName ($formattedFieldDefs)
+				VALUES ($formattedFieldValues)";
+
+		return $this->execute($sql, $data);
+	}
+
+	public function updateEntity(Uid $id, string $tableName, array $data): bool {
+		$fields = array_keys($data);
+		$formattedFields = implode(
+			', ',
+			array_map(fn($field) => "$field = :$field", $fields)
+		);
+
+		$sql = "UPDATE $tableName
+				SET $formattedFields
+				WHERE id = :id";
+		$data['id'] = $id;
+		return $this->execute($sql, $data);
+	}
+
+
+	public function deleteEntity(Uid $id, string $tableName): bool {
+		$sql = "DELETE FROM $tableName WHERE id = :id";
+		return $this->execute($sql, ['id' => $id]);
+	}
+
+	public function addTable(string $tableName, array $schema): void {
+		$fields = [];
+		foreach ($schema as $fieldName => $fieldType) {
+			$fields[] = "$fieldName $fieldType";
+		}
+		$formattedFields = implode(', ', $fields);
+
+		$sql = "CREATE TABLE IF NOT EXISTS $tableName (
+			$formattedFields
+		)";
+		$this->execute($sql);
+	}
+	public function clearTable(string $tableName): void {
+		$sql = "DELETE FROM $tableName";
+		$this->execute($sql);
+	}
+	public function clearAll(): void {
+		$sql = "DELETE ";
 	}
 
 }

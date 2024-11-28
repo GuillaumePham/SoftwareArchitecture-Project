@@ -10,7 +10,7 @@ use App\NewsEntityManager;
 $manager = new NewsEntityManager();
 
 // clear for testing
-$manager->clear();
+$manager->getDbAdapter()->clearAll();
 
 
 $firstNews = $manager->getById(new Uid("1"));

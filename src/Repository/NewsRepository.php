@@ -63,9 +63,7 @@ class NewsRepository extends Repository {
 
 
 	public function findById(Uid $id): ?News {
-		$sql = 'SELECT * FROM news
-				WHERE id = :id';
-		$result = $this->dbAdapter->query($sql, ['id' => $id]);
+		$result = $this->dbAdapter->query("news", ['id' => $id]);
 		if (!$result) {
 			return null;
 		}
@@ -75,8 +73,7 @@ class NewsRepository extends Repository {
 	}
 
 	public function findAll(): ?array {
-		$sql = 'SELECT * FROM news';
-		$results = $this->dbAdapter->query($sql);
+		$results = $this->dbAdapter->query("news");
 		if (!$results) {
 			return null;
 		}
