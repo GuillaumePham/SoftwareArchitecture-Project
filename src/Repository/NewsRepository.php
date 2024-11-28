@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\News;
-use App\Adapter\IDbAdapter;
+use App\Adapter\DbAdapter;
 use App\VO\Uid;
 use DateTimeImmutable;
 
 class NewsRepository extends Repository {
 	public function __construct(
-		protected IDbAdapter $dbAdapter
+		protected DbAdapter $dbAdapter
 	) { }
 
 	protected function getTableName(): string {

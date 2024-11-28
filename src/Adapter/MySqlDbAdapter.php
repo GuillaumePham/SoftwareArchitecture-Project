@@ -7,7 +7,7 @@ namespace App\Adapter;
 use PDO;
 use App\VO\Uid;
 
-class MySqlDbAdapter implements IDbAdapter {
+class MySqlDbAdapter implements DbAdapter {
 	private $pdo;
 
 	public function __construct(

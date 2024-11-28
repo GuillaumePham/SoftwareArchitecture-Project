@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Adapter\IDbAdapter;
+use App\Adapter\DbAdapter;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
@@ -15,7 +15,7 @@ use App\Model\News;
 use App\VO\Uid;
 
 class NewsEntityManager {
-	private IDbAdapter $dbAdapter;
+	private DbAdapter $dbAdapter;
 	private NewsRepository $newsRepository;
 
 	public function __construct() {
@@ -38,7 +38,7 @@ class NewsEntityManager {
 		$this->newsRepository = new NewsRepository($this->dbAdapter);
 	}
 
-	public function getDbAdapter(): IDbAdapter {
+	public function getDbAdapter(): DbAdapter {
 		return $this->dbAdapter;
 	}
 

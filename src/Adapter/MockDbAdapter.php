@@ -6,7 +6,7 @@ namespace App\Adapter;
 
 use App\VO\Uid;
 
-class MockDbAdapter implements IDbAdapter {
+class MockDbAdapter implements DbAdapter {
 	private $data = [];
 
 	public function __construct() {}

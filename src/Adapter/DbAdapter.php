@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Adapter;
 use App\VO\Uid;
 
-interface IDbAdapter {
+interface DbAdapter {
 	public function query(string $tableName, array $where = []): array|bool;
 
 
