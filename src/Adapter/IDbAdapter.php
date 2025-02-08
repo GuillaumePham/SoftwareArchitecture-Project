@@ -9,7 +9,7 @@ interface IDbAdapter {
 	public function query(string $tableName, array $where = []): array|bool;
 
 
-	public function createEntity(Uid $id, string $tableName, array $data): bool;
+	public function createEntity(string $tableName, array $data): bool;
 	public function updateEntity(Uid $id, string $tableName, array $data): bool;
 	public function deleteEntity(Uid $id, string $tableName): bool;
 
