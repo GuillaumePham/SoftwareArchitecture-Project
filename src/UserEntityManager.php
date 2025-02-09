@@ -8,28 +8,18 @@ use App\Adapter\IDbAdapter;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
-use App\Exception\RepositoryException;
-use App\Exception\DbException;
-use App\Adapter\MySqlDbAdapter;
 use App\Repository\UserRepository;
+use App\Service\EmailService;
 use App\Model\User;
 use App\VO\Uid;
 
 class UserEntityManager {
-	private IDbAdapter $dbAdapter;
 	private UserRepository $userRepository;
 
-	public function __construct() {
-		$config = parse_ini_file('config.ini');
-
-		$this->dbAdapter = new MySqlDbAdapter(
-			host: $config['host'],
-			db: $config['db'],
-			user: $config['user'],
-			password: $config['password']
-		);
-		// $this->dbAdapter = new MockDbAdapter();
-
+	public function __construct(
+		private IDbAdapter $dbAdapter,
+		private EmailService $emailService
+	) {
 		$this->userRepository = new UserRepository($this->dbAdapter);
 
 		$this->dbAdapter->addTable($this->userRepository->getTableName(), [
@@ -62,7 +52,7 @@ class UserEntityManager {
 			$data
 		)) {
 			$createdUser = $this->userRepository->findById($user->getId());
-			$this->sendEmail($user->getEmail(), "Account Created", "Your account has been successfully created.");
+			$this->emailService->sendEmailTo($user, "Account Created", "Your account has been successfully created.");
 			return $createdUser;
 		}
 		return null;
@@ -81,24 +71,12 @@ class UserEntityManager {
 			$data
 		)) {
 			$updatedUser = $this->userRepository->findById($user->getId());
-			$this->sendEmail($user->getEmail(), "Account Updated", "Your account details have been successfully updated.");
+			$this->emailService->sendEmailTo($user, "Account Updated", "Your account details have been successfully updated.");
 			return $updatedUser;
 		}
 	}
 
 	public function delete(Uid $id): void {
 		$this->dbAdapter->deleteEntity($id, $this->userRepository->getTableName());
-	}
-
-	private function sendEmail(string $to, string $subject, string $message): void {
-		$headers = [
-			'From' => "noreply@example.com",
-			'Reply-To' => "noreply@example.com",
-			'Content-Type' => "text/plain; charset=UTF-8"
-		];
-
-		if (!mail($to, $subject, $message, $headers)) {
-			error_log("Failed to send email to $to");
-		}
 	}
 }

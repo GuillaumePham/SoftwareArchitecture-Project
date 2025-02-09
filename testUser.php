@@ -4,9 +4,21 @@ require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use App\Model\User;
 use App\VO\Uid;
+use App\Service\EmailService;
+use App\Adapter\MySqlDbAdapter;
 use App\UserEntityManager;
 
-$manager = new UserEntityManager();
+$config = parse_ini_file('config.ini');
+
+$manager = new UserEntityManager(
+	new MySqlDbAdapter(
+		host: $config['host'],
+		db: $config['db'],
+		user: $config['user'],
+		password: $config['password']
+	),
+	new EmailService()
+);
 
 // Clear for testing
 $manager->getDbAdapter()->clearTable('user');

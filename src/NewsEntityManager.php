@@ -15,20 +15,11 @@ use App\Model\News;
 use App\VO\Uid;
 
 class NewsEntityManager {
-	private IDbAdapter $dbAdapter;
 	private NewsRepository $newsRepository;
 
-	public function __construct() {
-		$config = parse_ini_file('config.ini');
-
-		$this->dbAdapter = new MySqlDbAdapter(
-			host: $config['host'],
-			db: $config['db'],
-			user: $config['user'],
-			password: $config['password']
-		);
-		// $this->dbAdapter = new MockDbAdapter();
-
+	public function __construct(
+		private IDbAdapter $dbAdapter,
+	) {
 		$this->newsRepository = new NewsRepository($this->dbAdapter);
 
 

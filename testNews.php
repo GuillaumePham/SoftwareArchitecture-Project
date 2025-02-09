@@ -4,10 +4,17 @@ require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use App\Model\News;
 use App\VO\Uid;
+use App\Adapter\MySqlDbAdapter;
 use App\NewsEntityManager;
 
+$config = parse_ini_file('config.ini');
 
-$manager = new NewsEntityManager();
+$manager = new NewsEntityManager(new MySqlDbAdapter(
+	host: $config['host'],
+	db: $config['db'],
+	user: $config['user'],
+	password: $config['password']
+));
 
 // clear for testing
 $manager->getDbAdapter()->clearTable('news');
