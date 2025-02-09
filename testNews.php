@@ -4,20 +4,13 @@ require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use App\Model\News;
 use App\VO\Uid;
-use App\Adapter\MySqlDbAdapter;
-use App\NewsEntityManager;
+use App\Controller;
 
-$config = parse_ini_file('config.ini');
 
-$manager = new NewsEntityManager(new MySqlDbAdapter(
-	host: $config['host'],
-	db: $config['db'],
-	user: $config['user'],
-	password: $config['password']
-));
+$controller = new Controller();
+$controller->clear();
 
-// clear for testing
-$manager->getDbAdapter()->clearTable('news');
+$manager = $controller->getNewsManager();
 
 
 $firstNews = $manager->getById(new Uid("1"));
@@ -50,6 +43,6 @@ $firstNews = $manager->getById(new Uid("1"));
 echo $firstNews . PHP_EOL;
 
 
-
+$controller->clear();
 
 

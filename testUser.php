@@ -4,24 +4,13 @@ require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use App\Model\User;
 use App\VO\Uid;
-use App\Service\EmailService;
-use App\Adapter\MySqlDbAdapter;
-use App\UserEntityManager;
+use App\Controller;
 
-$config = parse_ini_file('config.ini');
 
-$manager = new UserEntityManager(
-	new MySqlDbAdapter(
-		host: $config['host'],
-		db: $config['db'],
-		user: $config['user'],
-		password: $config['password']
-	),
-	new EmailService()
-);
+$controller = new Controller();
+$controller->clear();
 
-// Clear for testing
-$manager->getDbAdapter()->clearTable('user');
+$manager = $controller->getUserManager();
 
 // Try to get a non-existent user
 $firstUser = $manager->getById(new Uid("1"));
@@ -38,6 +27,20 @@ $createdUser = $manager->create(
     )
 );
 echo "Created user: " . $createdUser . PHP_EOL;
+
+$createdUser = $manager->create(
+    new User(
+        new Uid("2"),
+        "AxelSevenet",
+        "password123",
+        "axelsevenet@gmail.com",
+        new DateTimeImmutable("2024-02-09 12:00:00")
+    )
+);
+echo "Created user: " . $createdUser . PHP_EOL;
+
+
+$controller->clear();
 
 //// Retrieve the user
 //$firstUser = $manager->getById(new Uid("1"));

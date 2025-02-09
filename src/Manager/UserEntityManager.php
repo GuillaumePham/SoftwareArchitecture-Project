@@ -2,25 +2,31 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Manager;
 
 use App\Adapter\IDbAdapter;
-
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-
 use App\Repository\UserRepository;
-use App\Service\EmailService;
 use App\Model\User;
 use App\VO\Uid;
+use App\VO\Event;
 
 class UserEntityManager {
 	private UserRepository $userRepository;
+	private Event $createUserEvent;
+	public function getCreateUserEvent(): Event { return $this->createUserEvent; }
+	private Event $updateUserEvent;
+	public function getUpdateUserEvent(): Event { return $this->updateUserEvent; }
+	private Event $deleteUserEvent;
+	public function getDeleteUserEvent(): Event { return $this->deleteUserEvent; }
 
 	public function __construct(
-		private IDbAdapter $dbAdapter,
-		private EmailService $emailService
+		private IDbAdapter $dbAdapter
 	) {
 		$this->userRepository = new UserRepository($this->dbAdapter);
+
+		$this->createUserEvent = new Event();
+		$this->updateUserEvent = new Event();
+		$this->deleteUserEvent = new Event();
 
 		$this->dbAdapter->addTable($this->userRepository->getTableName(), [
 			'id' => 'varchar(36) primary key',
@@ -35,8 +41,16 @@ class UserEntityManager {
 		return $this->dbAdapter;
 	}
 
+	public function getTableName(): string {
+		return $this->userRepository->getTableName();
+	}
+
 	public function getById(Uid $id): ?User {
 		return $this->userRepository->findById($id);
+	}
+
+	public function getAll(): ?array {
+		return $this->userRepository->findAll();
 	}
 
 	public function create(User $user): ?User {
@@ -52,7 +66,8 @@ class UserEntityManager {
 			$data
 		)) {
 			$createdUser = $this->userRepository->findById($user->getId());
-			$this->emailService->sendEmailTo($user, "Account Created", "Your account has been successfully created.");
+			// $this->emailService->sendEmailTo($user, "Account Created", "Your account has been successfully created.");
+			$this->createUserEvent->dispatch($createdUser);
 			return $createdUser;
 		}
 		return null;
@@ -71,12 +86,18 @@ class UserEntityManager {
 			$data
 		)) {
 			$updatedUser = $this->userRepository->findById($user->getId());
-			$this->emailService->sendEmailTo($user, "Account Updated", "Your account details have been successfully updated.");
+			// $this->emailService->sendEmailTo($user, "Account Updated", "Your account details have been successfully updated.");
+			$this->updateUserEvent->dispatch($updatedUser);
 			return $updatedUser;
 		}
 	}
 
 	public function delete(Uid $id): void {
-		$this->dbAdapter->deleteEntity($id, $this->userRepository->getTableName());
+		if ($this->dbAdapter->deleteEntity(
+			$id,
+			$this->userRepository->getTableName()
+		)) {
+			$this->deleteUserEvent->dispatch($id);
+		}
 	}
 }

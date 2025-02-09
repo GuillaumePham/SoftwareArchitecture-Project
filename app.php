@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\UserEntityManager;
 use App\Model\User;
 use App\VO\Uid;
+use App\Controller;
 
-$manager = new UserEntityManager();
+$controller = new Controller();
 
 // Récupération des arguments
 if ($argc < 2) {
@@ -28,7 +28,7 @@ switch ($command) {
         $id = new Uid($argv[2]);
         $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
 
-        $createdUser = $manager->create($user);
+        $createdUser = $controller->getUserManager()->create($user);
         echo $createdUser ? "Utilisateur ajouté: " . print_r($createdUser, true) : "Échec de l'ajout\n";
         break;
 
@@ -40,7 +40,7 @@ switch ($command) {
         $id = new Uid($argv[2]);
         $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
 
-        $updatedUser = $manager->update($user);
+        $updatedUser = $controller->getUserManager()->update($user);
         echo $updatedUser ? "Utilisateur mis à jour: " . print_r($updatedUser, true) : "Échec de la mise à jour\n";
         break;
 
@@ -50,12 +50,12 @@ switch ($command) {
             exit(1);
         }
         $id = new Uid($argv[2]);
-        $manager->delete($id);
+        $controller->getUserManager()->delete($id);
         echo "Utilisateur supprimé.\n";
         break;
 
 	case 'list':
-        $users = $manager->getDbAdapter()->query('user');
+        $users = $controller->getUserManager()->getDbAdapter()->query('user');
         echo "Liste des utilisateurs:\n";
         print_r($users);
         break;
