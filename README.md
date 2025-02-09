@@ -24,5 +24,10 @@ démarrer la base de données
 docker compose up mysql-database
 ```
 
+démarrer l'interface SMTP
+```shell
+docker compose up mailcatcher
+```
+
 ### Auteurs
 Ce Programme a été créé par Axel Sevenet: [@AxelSevenS](https://github.com/AxelSevenS), Guillaume Pham: [@GuillaumePham](https://github.com/GuillaumePham) et Alexis Damien: [@AlexisDamien](https://github.com/AlexisDamien)
