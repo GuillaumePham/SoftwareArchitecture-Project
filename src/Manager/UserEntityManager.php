@@ -85,7 +85,7 @@ class UserEntityManager {
 			$data
 		)) {
 			$updatedUser = $this->userRepository->findById($id);
-			$this->updateUserEvent->dispatch($updatedUser);
+			$this->updateUserEvent->dispatch($updatedUser, $data);
 			return $updatedUser;
 		}
 	}
