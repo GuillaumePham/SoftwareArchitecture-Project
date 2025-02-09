@@ -114,7 +114,7 @@ class User implements Model{
 	public function __tostring(): string {
 		return sprintf(
 			'[%s] %s %s %s',
-			$this->createdAt->format('Y-m-d H:i:s'),
+			$this->createdAt->format(\DateTime::ATOM),
 			$this->id,
 			$this->login,
 			$this->email

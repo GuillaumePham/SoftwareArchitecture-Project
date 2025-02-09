@@ -8,6 +8,8 @@ use App\Adapter\IDbAdapter;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Exception\RepositoryException;
 use App\Exception\DbException;
 use App\Adapter\MySqlDbAdapter;
@@ -54,7 +56,7 @@ class UserEntityManager {
 			'login' => $user->getLogin(),
 			'password' => $user->getPassword(),
 			'email' => $user->getEmail(),
-			'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s')
+			'created_at' => $user->getCreatedAt()->format(\DateTime::ATOM)
 		];
 		if ($this->dbAdapter->createEntity(
 			$user->getId(),
@@ -73,7 +75,7 @@ class UserEntityManager {
 			'login' => $user->getLogin(),
 			'password' => $user->getPassword(),
 			'email' => $user->getEmail(),
-			'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s')
+			'created_at' => $user->getCreatedAt()->format(\DateTime::ATOM)
 		];
 		if ($this->dbAdapter->updateEntity(
 			$user->getId(),
