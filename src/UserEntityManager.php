@@ -62,7 +62,7 @@ class UserEntityManager {
 			$data
 		)) {
 			$createdUser = $this->userRepository->findById($user->getId());
-			//$this->sendEmail($user->getEmail(), "Account Created", "Your account has been successfully created.");
+			$this->sendEmail($user->getEmail(), "Account Created", "Your account has been successfully created.");
 			return $createdUser;
 		}
 		return null;
@@ -91,9 +91,11 @@ class UserEntityManager {
 	}
 
 	private function sendEmail(string $to, string $subject, string $message): void {
-		$headers = "From: noreply@example.com\r\n";
-		$headers .= "Reply-To: noreply@example.com\r\n";
-		$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+		$headers = [
+			'From' => "noreply@example.com",
+			'Reply-To' => "noreply@example.com",
+			'Content-Type' => "text/plain; charset=UTF-8"
+		];
 
 		if (!mail($to, $subject, $message, $headers)) {
 			error_log("Failed to send email to $to");

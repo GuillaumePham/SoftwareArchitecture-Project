@@ -6,6 +6,9 @@ use App\Model\User;
 use App\VO\Uid;
 use App\UserEntityManager;
 
+ini_set('SMTP', 'localhost');
+ini_set('smtp_port', '1025');
+
 $manager = new UserEntityManager();
 
 // Clear for testing
