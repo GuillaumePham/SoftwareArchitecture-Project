@@ -29,7 +29,7 @@ switch ($command) {
         $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
 
         $createdUser = $controller->getUserManager()->create($user);
-        echo $createdUser ? "Utilisateur ajouté: " . print_r($createdUser, true) : "Échec de l'ajout\n";
+        echo $createdUser ? "Utilisateur ajouté: $createdUser" : "Échec de l'ajout\n";
         break;
 
     case 'update':
@@ -41,7 +41,7 @@ switch ($command) {
         $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
 
         $updatedUser = $controller->getUserManager()->update($user);
-        echo $updatedUser ? "Utilisateur mis à jour: " . print_r($updatedUser, true) : "Échec de la mise à jour\n";
+        echo $updatedUser ? "Utilisateur mis à jour: $updatedUser" : "Échec de la mise à jour\n";
         break;
 
     case 'delete':
@@ -57,7 +57,7 @@ switch ($command) {
 	case 'list':
         $users = $controller->getUserManager()->getDbAdapter()->query('user');
         echo "Liste des utilisateurs:\n";
-        print_r($users);
+        $users;
         break;
 
     default:
