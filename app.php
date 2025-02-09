@@ -11,7 +11,7 @@ $controller = new Controller();
 // Récupération des arguments
 if ($argc < 2) {
     echo "Usage:\n";
-    echo "  php app.php add <login> <password> <email>\n";
+    echo "  php app.php add <id> <login> <password> <email>\n";
     echo "  php app.php update <id> <login> <password> <email>\n";
     echo "  php app.php delete <id>\n";
     exit(1);
@@ -22,7 +22,7 @@ $command = $argv[1];
 switch ($command) {
     case 'add':
         if ($argc < 6) {
-            echo "Usage: php app.php add <login> <password> <email>\n";
+            echo "Usage: php app.php add <id> <login> <password> <email>\n";
             exit(1);
         }
         $id = new Uid($argv[2]);
