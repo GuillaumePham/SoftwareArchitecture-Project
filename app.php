@@ -55,10 +55,21 @@ switch ($command) {
         break;
 
 	case 'list':
-        $users = $controller->getUserManager()->getDbAdapter()->query('user');
-        echo "Liste des utilisateurs:\n";
-        $users;
-        break;
+		$users = $controller->getUserManager()->getDbAdapter()->query('user');
+		echo "Liste des utilisateurs:\n";
+
+		if (empty($users)) {
+			echo "Aucun utilisateur trouvé.\n";
+		} else {
+			foreach ($users as $user) {
+				echo "id: " . $user['id'] . "\n";
+				echo "Login: " . $user['login'] . "\n";
+				echo "Email: " . $user['email'] . "\n";
+				echo "Date de création: " . $user['created_at'] . "\n\n";
+			}
+		}
+		break;
+
 
     default:
         echo "Commande inconnue: $command\n";
