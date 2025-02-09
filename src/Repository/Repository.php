@@ -13,5 +13,5 @@ abstract class Repository {
 		$this->dbAdapter = $dbAdapter;
 	}
 
-	public abstract function getTableName(): string;
+	abstract public function getTableName(): string;
 }

@@ -41,7 +41,7 @@ class MySqlDbAdapter implements IDbAdapter {
 	}
 
 	public function prepare(string $sql): \PDOStatement {
-	    return $this->pdo->prepare($sql);
+		return $this->pdo->prepare($sql);
 	}
 
 	public function createEntity(Uid $id, string $tableName, array $data): bool {

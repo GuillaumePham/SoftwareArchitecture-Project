@@ -10,25 +10,25 @@ use DateTimeInterface;
 use DateTimeImmutable;
 
 class User implements Model{
-        private Uid $id;
-        private string $login;
-        private string $password;
-        private string $email;
-        private DateTimeInterface $createdAt;
+	private Uid $id;
+	private string $login;
+	private string $password;
+	private string $email;
+	private DateTimeInterface $createdAt;
 
-    public function __construct(
- 		Uid $id,
-       	string $login,
-       	string $password,
-       	string $email,
-       	DateTimeInterface $createdAt
-    ) {
-    	$this->id = $id;
-    	$this->login = $login;
-    	$this->password = $password;
-    	$this->email = $email;
-    	$this->createdAt = $createdAt;
-    }
+	public function __construct(
+		Uid $id,
+		string $login,
+		string $password,
+		string $email,
+		DateTimeInterface $createdAt
+	) {
+		$this->id = $id;
+		$this->login = $login;
+		$this->password = $password;
+		$this->email = $email;
+		$this->createdAt = $createdAt;
+	}
 
 	public static function hydrateUser(array $row): User {
 		if (!isset($row['id'])) {
@@ -43,42 +43,42 @@ class User implements Model{
 		if (!isset($row['email'])) {
 			throw new \InvalidArgumentException('Missing email in row');
 		}
-		if (!isset($row['createdAt'])) {
-			throw new \InvalidArgumentException('Missing createdAt in row');
+		if (!isset($row['created_at'])) {
+			throw new \InvalidArgumentException('Missing created_at in row');
 		}
 
 		return new User(
 			new Uid($row['id']),
-			new login($row['login']),
-			new password($row['password']),
-			new email($row['email']),
+			$row['login'],
+			$row['password'],
+			$row['email'],
 			new DateTimeImmutable($row['created_at'])
 		);
 	}
 	public static function tryHydrateUser(array $row): ?User {
-    		try {
-    			return User::hydrateUser($row);
-    		} catch (\InvalidArgumentException $e) {
-    			return null;
-    		}
-    	}
+		try {
+			return User::hydrateUser($row);
+		} catch (\InvalidArgumentException $e) {
+			return null;
+		}
+	}
 	public static function hydrateUserList(array $rows): array {
-    		$user = [];
-    		foreach ($rows as $row) {
-    			$user[] = User::hydrateUser($row);
-    		}
-    		return $user;
-    	}
-    	public static function tryHydrateUserList(array $rows): array {
-    		$user = [];
-    		foreach ($rows as $row) {
-    			$row = User::tryHydrateUser($row);
-    			if ($row !== null) {
-    				$user[] = $row;
-    			}
-    		}
-    		return $user;
-    	}
+		$user = [];
+		foreach ($rows as $row) {
+			$user[] = User::hydrateUser($row);
+		}
+		return $user;
+	}
+	public static function tryHydrateUserList(array $rows): array {
+		$user = [];
+		foreach ($rows as $row) {
+			$row = User::tryHydrateUser($row);
+			if ($row !== null) {
+				$user[] = $row;
+			}
+		}
+		return $user;
+	}
 
 	public function getId(): Uid {
 		return $this->id;
@@ -109,5 +109,15 @@ class User implements Model{
 	}
 	public function setCreatedAt(DateTimeInterface $date): void {
 		$this->createdAt = $date;
+	}
+
+	public function __tostring(): string {
+		return sprintf(
+			'[%s] %s %s %s',
+			$this->createdAt->format('Y-m-d H:i:s'),
+			$this->id,
+			$this->login,
+			$this->email
+		);
 	}
 }

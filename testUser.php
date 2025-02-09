@@ -13,10 +13,10 @@ $manager->getDbAdapter()->clearTable('user');
 
 // Try to get a non-existent user
 $firstUser = $manager->getById(new Uid("1"));
-echo "First user (should be null): " . var_export($firstUser, true) . PHP_EOL;
+echo "Non-existent user (should be empty): " . $firstUser . PHP_EOL;
 
 // Create a user
-$createdUser = $manager->add(
+$createdUser = $manager->create(
     new User(
         new Uid("1"),
         "JohnDoe",
@@ -25,7 +25,7 @@ $createdUser = $manager->add(
         new DateTimeImmutable("2024-02-09 12:00:00")
     )
 );
-echo "Created user: " . var_export($createdUser, true) . PHP_EOL;
+echo "Created user: " . $createdUser . PHP_EOL;
 
 //// Retrieve the user
 //$firstUser = $manager->getById(new Uid("1"));

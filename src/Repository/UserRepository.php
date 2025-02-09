@@ -20,29 +20,21 @@ class UserRepository extends Repository {
 	}
 
 	public function findById(Uid $id): ?User {
-        try {
-            $stmt = $this->dbAdapter->prepare("SELECT * FROM " . $this->getTableName() . " WHERE id = :id");
-            $stmt->execute(['id' => $id->getValue()]);
-            $result = $stmt->fetch();
+		$result = $this->dbAdapter->query($this->getTableName(), ['id' => $id]);
+		if (!$result) {
+			return null;
+		}
 
-            if (!$result) {
-                return null;
-            }
+		$row = $result[0];
+		return User::tryHydrateUser($row);
+	}
 
-            return User::tryHydrateUser($result);
-        } catch (DbException $e) {
-            error_log($e->getMessage());
-            throw new RepositoryException("Error fetching user by ID", 0, $e);
-        }
-    }
+	public function findAll(): ?array {
+		$results = $this->dbAdapter->query($this->getTableName());
+		if (!$results) {
+			return null;
+		}
 
-    public function findAll(): array {
-        try {
-            $results = $this->dbAdapter->query($this->getTableName());
-            return User::tryHydrateUserList($results) ?? [];
-        } catch (DbException $e) {
-            error_log($e->getMessage());
-            throw new RepositoryException("Error fetching all users", 0, $e);
-        }
-    }
+		return User::tryHydrateUserList($results);
+	}
 }
