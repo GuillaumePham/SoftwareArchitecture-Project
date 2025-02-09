@@ -12,16 +12,16 @@ use DateTimeImmutable;
 class News implements Model {
 	private Uid $id;
 	private string $content;
-	private DateTimeInterface $created_at;
+	private DateTimeInterface $createdAt;
 
 	public function __construct(
 		Uid $id,
 		string $content,
-		DateTimeInterface $created_at
+		DateTimeInterface $createdAt
 	) {
 		$this->id = $id;
 		$this->content = $content;
-		$this->created_at = $created_at;
+		$this->createdAt = $createdAt;
 	}
 
 	public static function hydrateNews(array $row): News {
@@ -83,17 +83,17 @@ class News implements Model {
 	}
 
 	public function getCreatedAt(): DateTimeInterface {
-		return $this->created_at;
+		return $this->createdAt;
 	}
 	public function setCreatedAt(DateTimeInterface $date): void {
-		$this->created_at = $date;
+		$this->createdAt = $date;
 	}
 
 	public function __tostring(): string {
-		return sprintf(
-			'[%s] %s',
-			$this->created_at->format('Y-m-d H:i:s'),
-			$this->content
-		);
+		return json_encode([
+			'id' => $this->id,
+			'content' => $this->content,
+			'createdAt' => $this->createdAt->format(\DateTime::ATOM)
+		]);
 	}
 }

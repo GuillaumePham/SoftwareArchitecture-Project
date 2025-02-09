@@ -67,38 +67,37 @@ class UserEntityManager {
 			$data
 		)) {
 			$createdUser = $this->userRepository->findById($user->getId());
-			// $this->emailService->sendEmailTo($user, "Account Created", "Your account has been successfully created.");
 			$this->createUserEvent->dispatch($createdUser);
 			return $createdUser;
 		}
 		return null;
 	}
 
-	public function update(User $user): ?User {
-		$data = [
-			'login' => $user->getLogin(),
-			'password' => $user->getPassword(),
-			'email' => $user->getEmail(),
-			'created_at' => $user->getCreatedAt()->format(\DateTime::ATOM)
-		];
+	public function update(Uid $id, ?string $login = null, ?string $password = null, ?string $email = null): ?User {
+		$data = [];
+		if ($login !== null) { $data['login'] = $login; }
+		if ($password !== null) { $data['password'] = $password; }
+		if ($email !== null) { $data['email'] = $email; }
+
 		if ($this->dbAdapter->updateEntity(
-			$user->getId(),
+			$id,
 			$this->userRepository->getTableName(),
 			$data
 		)) {
-			$updatedUser = $this->userRepository->findById($user->getId());
-			// $this->emailService->sendEmailTo($user, "Account Updated", "Your account details have been successfully updated.");
+			$updatedUser = $this->userRepository->findById($id);
 			$this->updateUserEvent->dispatch($updatedUser);
 			return $updatedUser;
 		}
 	}
 
-	public function delete(Uid $id): void {
+	public function delete(Uid $id): bool {
 		if ($this->dbAdapter->deleteEntity(
 			$id,
 			$this->userRepository->getTableName()
 		)) {
 			$this->deleteUserEvent->dispatch($id);
+			return true;
 		}
+		return false;
 	}
 }
