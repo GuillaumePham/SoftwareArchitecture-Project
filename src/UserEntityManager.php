@@ -65,7 +65,7 @@ class UserEntityManager {
                 $data
             )) {
                 $createdUser = $this->userRepository->findById($user->getId());
-                $this->sendEmail($user->getEmail(), "Account Created", "Your account has been successfully created.");
+                //$this->sendEmail($user->getEmail(), "Account Created", "Your account has been successfully created.");
                 return $createdUser;
             }
         } catch (DbException $e) {
