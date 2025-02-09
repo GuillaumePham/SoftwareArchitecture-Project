@@ -81,7 +81,7 @@ class UserEntityManager {
 			$data
 		)) {
 			$updatedUser = $this->userRepository->findById($user->getId());
-			$this->sendEmail($user->getEmail(), "Account Updated", "Your account details have been successfully updated.");
+			//$this->sendEmail($user->getEmail(), "Account Updated", "Your account details have been successfully updated.");
 			return $updatedUser;
 		}
 	}

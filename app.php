@@ -1,0 +1,66 @@
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use App\UserEntityManager;
+use App\Model\User;
+use App\VO\Uid;
+
+$manager = new UserEntityManager();
+
+// Récupération des arguments
+if ($argc < 2) {
+    echo "Usage:\n";
+    echo "  php app.php add <login> <password> <email>\n";
+    echo "  php app.php update <id> <login> <password> <email>\n";
+    echo "  php app.php delete <id>\n";
+    exit(1);
+}
+
+$command = $argv[1];
+
+switch ($command) {
+    case 'add':
+        if ($argc < 6) {
+            echo "Usage: php app.php add <login> <password> <email>\n";
+            exit(1);
+        }
+        $id = new Uid($argv[2]);
+        $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
+
+        $createdUser = $manager->create($user);
+        echo $createdUser ? "Utilisateur ajouté: " . print_r($createdUser, true) : "Échec de l'ajout\n";
+        break;
+
+    case 'update':
+        if ($argc < 6) {
+            echo "Usage: php app.php update <id> <login> <password> <email>\n";
+            exit(1);
+        }
+        $id = new Uid($argv[2]);
+        $user = new User($id, $argv[3], $argv[4], $argv[5], new DateTimeImmutable());
+
+        $updatedUser = $manager->update($user);
+        echo $updatedUser ? "Utilisateur mis à jour: " . print_r($updatedUser, true) : "Échec de la mise à jour\n";
+        break;
+
+    case 'delete':
+        if ($argc < 3) {
+            echo "Usage: php app.php delete <id>\n";
+            exit(1);
+        }
+        $id = new Uid($argv[2]);
+        $manager->delete($id);
+        echo "Utilisateur supprimé.\n";
+        break;
+
+	case 'list':
+        $users = $manager->getDbAdapter()->query('user');
+        echo "Liste des utilisateurs:\n";
+        print_r($users);
+        break;
+
+    default:
+        echo "Commande inconnue: $command\n";
+        exit(1);
+}
