@@ -20,7 +20,7 @@ class Controller {
 	private $userManager;
 
 	public function __construct() {
-		$this->config = parse_ini_file('config.ini');
+		$this->config = parse_ini_file(filename: 'config.ini');
 
 		$this->adapter = new MySqlDbAdapter(
 			host: $this->config['host'],
@@ -58,8 +58,19 @@ class Controller {
 			$this->newsManager->createUserNews(new Uid("user_$userId"), $user);
 		});
 
-		$this->userManager->getUpdateUserEvent()->subscribe(function(User $user) {
-			$this->emailService->sendEmailTo($user, "Account Updated", "Your account has been successfully updated.");
+		$this->userManager->getUpdateUserEvent()->subscribe(function(User $user, array $changes) {
+			$message = "Your account has been updated with the following changes:\n";
+			if (isset($changes['login'])) {
+				$message .= "Login: {$changes['login']}\n";
+			}
+			if (isset($changes['email'])) {
+				$message .= "Email: {$changes['email']}\n";
+			}
+			if (isset($changes['password'])) {
+				$message .= "Password";
+			}
+
+			$this->emailService->sendEmailTo($user, "Account Updated", $message);
 		});
 	}
 

@@ -89,28 +89,29 @@ class NewsEntityManager {
 		}
 	}
 
-	public function update(News $news): ?News {
-		$data = [
-			'content' => $news->getContent(),
-			'created_at' => $news->getCreatedAt()->format('Y-m-d H:i:s')
-		];
+	public function update(Uid $id, ?string $content): ?News {
+		$data = [];
+		if ($content !== null) { $data['content'] = $content; }
+
 		if ($this->dbAdapter->updateEntity(
-			$news->getId(),
+			$id,
 			$this->newsRepository->getTableName(),
 			$data
 		)) {
-			$updatedNews = $this->newsRepository->findById($news->getId());
+			$updatedNews = $this->newsRepository->findById($id);
 			$this->updateNewsEvent->dispatch($updatedNews);
 			return $updatedNews;
 		}
 	}
 
-	public function delete(Uid $id): void {
+	public function delete(Uid $id): bool {
 		if ($this->dbAdapter->deleteEntity(
 			$id,
 			$this->newsRepository->getTableName()
 		)) {
 			$this->deleteNewsEvent->dispatch($id);
+			return true;
 		}
+		return false;
 	}
 }

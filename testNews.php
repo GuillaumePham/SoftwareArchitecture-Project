@@ -29,11 +29,8 @@ $firstNews = $manager->getById(new Uid("1"));
 echo $firstNews . PHP_EOL;
 
 $updateNews = $manager->update(
-	new News(
-		new Uid("1"),
-		"Edited" ,
-		new DateTimeImmutable("1969-12-31 23:59:59")
-	)
+	new Uid("1"),
+	"Edited"
 );
 echo $updateNews . PHP_EOL;
 

@@ -112,12 +112,11 @@ class User implements Model{
 	}
 
 	public function __tostring(): string {
-		return sprintf(
-			'[%s] %s %s %s',
-			$this->createdAt->format(\DateTime::ATOM),
-			$this->id,
-			$this->login,
-			$this->email
-		);
+		return json_encode([
+			'id' => (string) $this->id,
+			'login' => $this->login,
+			'email' => $this->email,
+			'createdAt' => $this->createdAt->format(\DateTime::ATOM),
+		]);
 	}
 }
